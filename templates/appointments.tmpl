@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+  <title>Appointments</title>
+  <style type="text/css">
+    #page {
+      width:  600px;
+      height: 400px;
+      background-color: #eee;
+    }
+    #error_message {
+      width: 600px;
+      height: 60px;
+      background-color: tan;
+    }
+  </style>
+
+  <script >
+    /*
+    Document.ready( function () {
+    function getAppointments
+    }
+    */
+  </script>
+</head>
+<body>
+<div id="page">
+  <div id="error_message">
+    <tmpl_var name="error_message">
+  </div>
+
+  <div>
+    <form method="post" action="/cgi-bin/appointments.cgi">
+
+    <p>
+      <input type="submit" value="NEW"></input>
+    </p>
+
+    <p>
+      <input type="text"></input>
+      <input type="submit" value="SEARCH"></input>
+    </p>
+
+    </form>
+  </div>
+
+  <div>
+    <h2>Appointments:</h2>
+    <table id="appointment_list">
+        <tr>
+          <td>Dr. Spock</td>
+          <td>2:00pm</td>
+        </tr>
+    </table>
+  </div>
+  
+</div> <!--end page-->
+</body>
+</html>
