@@ -31,19 +31,20 @@ sub insert {
 }
 
 sub build_appointment_list {
-    my ($dbh) =  @_;
-    my $appointment_list_ref =$dbh->selectall_array_ref(
-      'select datetime, description from appointment');
-    
+    my ($dbh) = @_;
+    my $appointment_list_ref = $dbh->selectall_array_ref(
+        'select datetime, description from appointment');
+
     # die will be caught with eval and $@
     open my $fh, ">", "appointment_list.json"
       or die "Cannot open appointment_list.json: $!";
 
     print $fh "{ ";
-    foreach my $row ( @$appointment_list_ref ) {
-        my ($datetime, $description) = @$row;
-        my ($date, $time) = split ' ', $datetime;
-        print $fh "\"date\":\"$date\", \"time\":\"$time\":\"description\":\"$description\"\n";
+    foreach my $row (@$appointment_list_ref) {
+        my ( $datetime, $description ) = @$row;
+        my ( $date, $time ) = split ' ', $datetime;
+        print $fh
+"{ \"date\":\"$date\", \"time\":\"$time\":\"description\":\"$description\"}\n";
     }
     close $fh or die "Error closing appointment_list.json: $!";
 }
