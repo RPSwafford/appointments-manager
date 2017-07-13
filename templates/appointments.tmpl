@@ -6,7 +6,7 @@
   <style type="text/css">
     #page {
       width:  600px;
-      height: 400px;
+      height: 800px;
       background-color: #eee;
     }
     #error_message {
@@ -14,29 +14,51 @@
       height: 60px;
       background-color: tan;
     }
+    #submit_new_appointment {
+      margin-top: 20px;
+      margin-bottom: 50px;
+    }
   </style>
 
   <script >
-    /*
     Document.ready( function () {
-    function getAppointments
-    }
-    */
+        function getAppointments() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                $("#appointment_list").html(this.responseText);
+            }
+        };
+        xhttp.open("GET", "appointment.json", true);
+        xhttp.send();
+    })
   </script>
 </head>
 <body>
 <div id="page">
+  <h1>Appointment Minder</h1>
   <div id="error_message">
     <tmpl_var name="error_message">
   </div>
 
+  <!-- form to submit new appointments -->
+  <form id="submit_new_appointment" method="get" action="/perl/appointments.cgi">
+    <!--Submit a new appointment -->
+    <p>Date (YYYY-MM-DD):      <input id="date" name="date" type="text"
+        maxlength=40 size=40></p>
+
+    <p>Time: (HH:MM:SS): <input id="time" name="time" type="text" maxlength=40
+        size=40></p>
+
+    <p>Description<input id="description" name="description"
+        type="text" maxlength=40 size=40></p>
+
+    <p><input type="submit" value="NEW"></input></p>
+  </form>
+
   <div>
-    <form method="post" action="/cgi-bin/appointments.cgi">
 
-    <p>
-      <input type="submit" value="NEW"></input>
-    </p>
-
+    <form method="get" action="/perl/appointments.cgi">
     <p>
       <input type="text"></input>
       <input type="submit" value="SEARCH"></input>
@@ -48,10 +70,12 @@
   <div>
     <h2>Appointments:</h2>
     <table id="appointment_list">
+<!--
         <tr>
           <td>Dr. Spock</td>
           <td>2:00pm</td>
         </tr>
+-->
     </table>
   </div>
   
