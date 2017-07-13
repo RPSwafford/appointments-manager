@@ -31,6 +31,7 @@ sub insert {
 }
 
 sub build_appointment_list {
+    my $this = shift;
     my ($dbh) = @_;
     my $appointment_list_ref = $dbh->selectall_array_ref(
         'select datetime, description from appointment');
@@ -47,6 +48,17 @@ sub build_appointment_list {
 "{ \"date\":\"$date\", \"time\":\"$time\":\"description\":\"$description\"}\n";
     }
     close $fh or die "Error closing appointment_list.json: $!";
+}
+
+sub send_appointment_list {
+    my $this = shift;
+    # Send appointment list as to client somehow.  Client must convert it from
+    # JSON to HTML table rows (<tr>'s full of <td>'s.
+}
+
+sub dbh() {
+    my $this = shift;
+    return $this->{dbh};
 }
 
 1;
