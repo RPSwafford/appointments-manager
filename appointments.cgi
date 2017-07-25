@@ -6,15 +6,29 @@ use HTML::Template;
 use DBI;
 use CGI;
 
-# Get appointment parameters from client
-my $q    = CGI->new;
-my $date = $q->param('date');
-my $time = $q->param('time');
+use AppointmentsDb;
 
 # All HTML is handled with template
 my $template =
   HTML::Template->new(
     filename => '/usr/lib/cgi-bin/templates/appointments.tmpl' );
+
+# Display page
+print "Content-Type: text/html\n\n", $template->output;
+#
+=pod
+# Get appointment parameters from client
+my $q      = CGI->new;
+my $month  = $q->param('month');
+my $day    = $q->param('day');
+my $year   = $q->param('year');
+my $hour   = $q->param('hour');
+my $minute = $q->param('minute');
+
+my $date = "$month/$day/$year";
+my $time = "$hour:$minute";
+
+my $search_target = $q->param('search_target');
 
 # Accommadate MySQL DATETIME format.
 my $date_time = "$date $time";
@@ -33,15 +47,12 @@ if ( $date_time && $description ) {
             error_message => "Error updating appointments database\n$@" );
     }
 }
-elsif ( 0 ) {  # Need way to tell AJAX GET from form-submit GET
+elsif ( $search_target =~ s/Ajax: // ) {
 
-    # Ajax
+    # Ajax Get request
     my $appointments = AppointmentsDB->new;
-    $appointments->build_appointment_list($appointments->dbh());
+    $appointments->build_appointment_list( $appointments->dbh() );
     $appointments->send_appointment_list;
 
 }
-
-# Display page
-print "Content-Type: text/html\n\n", $template->output;
-
+=cut

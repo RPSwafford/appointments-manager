@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Appointments</title>
+
   <style type="text/css">
     #page {
       width:  600px;
@@ -20,17 +21,51 @@
     }
   </style>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    </script>
+
   <script >
     Document.ready( function () {
         function getAppointments() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                $("#appointment_list").html(this.responseText);
+            alert( "Made it to the template script..." );
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    $("#appointment_list").html(this.responseText);
+                }
+            };
+            xhttp.open("GET", "localhost/perl/appointments.cgi", true);
+            xhttp.send( "Ajax: " + $("#search_target").html() );
+            console.log( "search target: " + $("#search_target").html() );
+        }
+
+        function validate() {
+            var appointment_time = new Date(
+                $("#year").html(),
+                $("#month"),html(),
+                $("#day"),html(),
+                $("#hours"),html(),
+                $("#minutes"),html(),
+                0, 0
+              );
+
+            if ( appointment_time < new (Date) {
+                $("#error_message).html) (
+                  month + "/" day + "/" + year + " " + hour + ":" + minutes +
+                  " is before present time."
+                );
             }
-        };
-        xhttp.open("GET", "appointment.json", true);
-        xhttp.send();
+        }
+
+        // This function changes the value of the "NEW" button to "ADD".
+        // It also shows the cancel button.
+        function new_to_add () {
+            alert("Entering new_to_add()");
+            $("#new").html('ADD');
+            $("#new").val('ADD');
+            $("#cancel").show();
+        }
+
     })
   </script>
 </head>
@@ -38,15 +73,16 @@
 <div id="page">
   <h1>Appointment Minder</h1>
   <div id="error_message">
-    <tmpl_var name="error_message">
+    <TMPL_VAR NAME="error_message">
   </div>
 
   <!-- form to submit new appointments -->
   <form id="submit_new_appointment" method="get" action="/perl/appointments.cgi">
 
     <!-- Note: "value" for "year" is the number of years since 1970. -->
+    <div id="enter_appointments" hidden>
     <p>Date (MM-DD-YYYY):      
-      <select name="month">
+      <select id="month">
         <option value = 0>Jan</option>
         <option value = 1>Feb</option>
         <option value = 2>Mar</option>
@@ -60,7 +96,7 @@
         <option value = 10>Nov</option>
         <option value = 11>Dec</option>
       </select>
-      <select name="day">
+      <select id="day">
         <option value = 0>1</option>
         <option value = 1>2</option>
         <option value = 2>3</option>
@@ -71,7 +107,8 @@
         <option value = 7>8</option>
         <option value = 8>9</option>
         <option value = 9>10</option>
-        <option value = 10>12</option>
+        <option value = 10>11</option>
+        <option value = 11>12</option>
         <option value = 12>13</option>
         <option value = 13>14</option>
         <option value = 14>15</option>
@@ -92,7 +129,7 @@
         <option value = 29>30</option>
         <option value = 30>31</option>
       </select>
-      <select name="year">
+      <select id="year">
         <option value = "46">2017</option>
         <option value = "47">2018</option>
         <option value = "48">2019</option>
@@ -105,7 +142,7 @@
     </p>
 
     <p>Time: (HH:MM): 
-        <select name="hour">
+        <select id="hour">
            <option value = "00">00</option>
            <option value = "01">01</option>
            <option value = "02">02</option>
@@ -167,7 +204,7 @@
            <option value = "58">58</option>
            <option value = "59">59</option>
         </select>
-        <select name="minute">
+        <select id="minutes">
            <option value = "00">00</option>
            <option value = "01">01</option>
            <option value = "02">02</option>
@@ -231,18 +268,36 @@
         </select>
     </p>
 
-    <p>Description<input id="description" name="description"
+    <p>Description<input id="description" id="description"
         type="text" maxlength="40" size="40"></p>
+    </div>
 
-    <p><input type="submit" value="NEW"></input></p>
+    <p>
+       <!--
+       <button id="new" type="submit" onsubmit="new_to_add()" >NEW
+         </button>
+       -->
+       <input id="new" type="button" value="NEW" onclick="this.new_to_add()" >
+         </input>
+       <input hidden id="cancel" type="button" value="CANCEL" >
+         </input>
+    </p>
+
   </form>
 
   <div>
-
+   
+    <!--
     <form method="get" action="/perl/appointments.cgi">
     <p>
       <input type="text"></input>
       <input type="submit" value="SEARCH"></input>
+    </p>
+    -->
+    <p>
+      <input id="search_target" type="text"></input>
+      <button onclick="getAppointments($('#search_target').html())">SEARCH
+        </button>
     </p>
 
     </form>
@@ -251,7 +306,7 @@
   <div>
     <h2>Appointments:</h2>
     <table id="appointment_list">
-        # Need to build table rows from json returned from AJAX
+        # Need to build table rows from json returned from server via AJAX
 <!--
         <tr>
           <td>Dr. Spock</td>

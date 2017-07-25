@@ -1,1 +1,6 @@
 *.swp
+*.tar
+*.gz
+*.bak
+Makefile
+make_install
