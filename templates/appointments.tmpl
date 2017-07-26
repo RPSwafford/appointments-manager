@@ -34,7 +34,7 @@
                     $("#appointment_list").html(this.responseText);
                 }
             };
-            xhttp.open("GET", "localhost/perl/appointments.cgi", true);
+            xhttp.open("POST", "localhost/perl/appointments.cgi", true);
             xhttp.send( "Ajax: " + $("#search_target").html() );
             console.log( "search target: " + $("#search_target").html() );
         }

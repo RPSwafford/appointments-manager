@@ -1,9 +1,11 @@
 package AppointmentsDb;
+use strict;
+use warnings;
 
 use DBI;
 use feature 'say';
 
-# database handle
+#Attributes:
 my $dbh;
 
 sub new () {
@@ -15,10 +17,11 @@ sub new () {
 
 sub insert {
     my $this = shift;
-    print "AppointmentDB: date_time: $date_time\n";
-    print "AppointmentDB: description: $description\n";
     my ( $date_time, $description ) = @_
       or die "Usage: insert date_time description";
+
+    print "AppointmentDB: date_time: $date_time\n";
+    print "AppointmentDB: description: $description\n";
 
     my $rows_affected = $dbh->do(
         q{insert into appointment
@@ -31,31 +34,33 @@ sub insert {
 }
 
 sub build_appointment_list {
-    my $this = shift;
-    my ($dbh) = @_;
-    my $appointment_list_ref = $dbh->selectall_array_ref(
-        'select datetime, description from appointment');
+    my $this                 = shift;
+    my $appointment_list_ref = $dbh->selectall_arrayref(
+        'select date_time, description from appointment');
 
-    # die will be caught with eval and $@
-    open my $fh, ">", "appointment_list.json"
-      or die "Cannot open appointment_list.json: $!";
-
-    print $fh "{ ";
+    my $appointments = "{ appointments: [\n";
     foreach my $row (@$appointment_list_ref) {
         my ( $datetime, $description ) = @$row;
         my ( $date, $time ) = split ' ', $datetime;
-        print $fh
-"{ \"date\":\"$date\", \"time\":\"$time\":\"description\":\"$description\"}\n";
+        $appointments .=
+"  { \"date\":\"$date\", \"time\":\"$time\", \"description\":\"$description\"},\n";
     }
-    close $fh or die "Error closing appointment_list.json: $!";
+
+    # Remove terminating comma from last element of list.
+    $appointments =~ s/,\n$/\n/;
+
+    $appointments .= ']);';
+    print $appointments;
 }
 
 sub send_appointment_list {
     my $this = shift;
-    # Send appointment list as to client somehow.  Client must convert it from
+
+    # Send appointment list to client somehow.  Client must convert it from
     # JSON to HTML table rows (<tr>'s full of <td>'s.
 }
 
+# Accessor method
 sub dbh() {
     my $this = shift;
     return $this->{dbh};

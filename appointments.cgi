@@ -16,7 +16,6 @@ my $template =
 # Display page
 print "Content-Type: text/html\n\n", $template->output;
 #
-=pod
 # Get appointment parameters from client
 my $q      = CGI->new;
 my $month  = $q->param('month');
@@ -55,4 +54,3 @@ elsif ( $search_target =~ s/Ajax: // ) {
     $appointments->send_appointment_list;
 
 }
-=cut
